@@ -20,7 +20,7 @@ import arcade
 # import arcade.gui
 
 # from attack_animation import AttackType, AttackAnimation
-# from game_state import GameState
+from game_state import GameState
 
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 600
@@ -40,7 +40,7 @@ class MyGame(arcade.Window):
     PLAYER_IMAGE_Y = SCREEN_HEIGHT / 2.5
     COMPUTER_IMAGE_X = (SCREEN_WIDTH / 2) * 1.5
     COMPUTER_IMAGE_Y = SCREEN_HEIGHT / 2.5
-    ATTACK_FRAME_WIDTH = 154 / 2
+    ATTACK_FRAME_WIDTH = 154 / 2.
     ATTACK_FRAME_HEIGHT = 154 / 2
 
     def __init__(self, width, height, title):
@@ -148,17 +148,24 @@ class MyGame(arcade.Window):
        Pour connaître la liste des touches possibles:
        http://arcade.academy/arcade.key.html
        """
-        if (self.game_state == game_state.GameState.NOT_STARTED and key == arcade.key.SPACE)
+        if (self.game_state == game_state.GameState.NOT_STARTED and key == arcade.key.SPACE):
+            self.game_state = game_state.GameState.ROUND_ACTIVE
 
+        elif (self.game_state == game_state.GameState.ROUND_DONE and key == arcade.key.SPACE):
+            self.game_state = game_state.GameState.ROUND_ACTIVE
+            False
+        elif (self.game_state == game_state.GameState.GAME_OVER and key == arcade.key.SPACE):
+            self.game_state = game_state.GameState.ROUND_ACTIVE
+            False
     def reset_round(self):
         """
        Réinitialiser les variables qui ont été modifiées
        """
-        # self.computer_attack_type = -1
-        # self.player_attack_chosen = False
-        # self.player_attack_type = {AttackType.ROCK: False, AttackType.PAPER: False, AttackType.SCISSORS: False}
-        # self.player_won_round = False
-        # self.draw_round = False
+        self.computer_attack_type = -1
+        self.player_attack_chosen = False
+        self.player_attack_type = {AttackType.ROCK: False, AttackType.PAPER: False, AttackType.SCISSORS: False}
+        self.player_won_round = False
+        self.draw_round = False
 
         pass
 
@@ -173,7 +180,11 @@ class MyGame(arcade.Window):
 
         # Test de collision pour le type d'attaque (self.player_attack_type).
         # Rappel que si le joueur choisi une attaque, self.player_attack_chosen = True
-        pass
+        def on_mouse_press(self, x, y, button, key_modifiers):
+            if self.hero.collides_with_point((x, y)):
+                print("L'usager a cliqué sur le héros.")
+            else:
+                print("L'usager a cliqué ailleurs.")
 
 
 def main():
