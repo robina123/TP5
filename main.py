@@ -1,32 +1,16 @@
 import random as r
-import arcade as a
-import arcade.gui as gui
+import arcade
+# import arcade.gui
 from attack_animation import AttackType, AttackAnimation
 from game_state import GameState
 
-SCREEN_WIDTH = 1000
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "Roche,papier, ciseaux"
-DEFAULT_LINE_HEIGHT = 45
-
-"""
-Modèle de départ pour la programmation Arcade.
-Il suffit de modifier les méthodes nécessaires à votre jeu.
-"""
-import random
-
-import arcade
-
-# import arcade.gui
-
-# from attack_animation import AttackType, AttackAnimation
+from attack_animation import AttackType, AttackAnimation
 from game_state import GameState
 
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Roche, papier, ciseaux"
 DEFAULT_LINE_HEIGHT = 45  # The default line height for text.
-
 
 class MyGame(arcade.Window):
     """
