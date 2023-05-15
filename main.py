@@ -41,20 +41,25 @@ class MyGame(arcade.Window):
         self.player_attack_type = {}
         self.computer_attack_type = None
         self.player_attack_chosen = False
-        self.player_won_round = None
+        self.player_won_round = 0
         self.draw_round = None
-        self.game_state = game_state.GameState.NOT_STARTED
+        self.game_state = GameState.NOT_STARTED
 
     def setup(self):
-        """
-       Configurer les variables de votre jeu ici. Il faut appeler la méthode une nouvelle
-       fois si vous recommencer une nouvelle partie.
-       """
-        # C'est ici que vous allez créer vos listes de sprites et vos sprites.
-        # Prenez note que vous devriez attribuer une valeur à tous les attributs créés dans __init__
-
-        pass
-
+        self.player = arcade.Sprite('asset/faceBeard.png', 0.5, center_x=self.PLAYER_IMAGE_X, center_y=self.PLAYER_IMAGE_Y)
+        self.computer = arcade.Sprite('asset/compy.png', 2.5, center_x=self.COMPUTER_IMAGE_X, center_y=self.COMPUTER_IMAGE_Y)
+        self.players = None
+        self.rock = arcade.Sprite('asset/srock.png', 0.5, center_x=self.PLAYER_IMAGE_X, center_y=self.PLAYER_IMAGE_Y)
+        self.paper = arcade.Sprite('asset/spaper.png', 0.5, center_x=self.PLAYER_IMAGE_X, center_y=self.PLAYER_IMAGE_Y)
+        self.scissors = arcade.Sprite('asset/scissors.png', 0.5, center_x=self.PLAYER_IMAGE_X, center_y=self.PLAYER_IMAGE_Y)
+        self.player_score = 0
+        self.computer_score = 0
+        self.player_attack_type = {}
+        self.computer_attack_type = None
+        self.player_attack_chosen = False
+        self.player_won_round = 0
+        self.draw_round = None
+        self.game_state = GameState.ROUND_ACTIVE
     def validate_victory(self):
         """
        Utilisé pour déterminer qui obtient la victoire (ou s'il y a égalité)
@@ -88,22 +93,18 @@ class MyGame(arcade.Window):
         pass
 
     def on_draw(self):
-        """
-       C'est la méthode que Arcade invoque à chaque "frame" pour afficher les éléments
-       de votre jeu à l'écran.
-       """
-
-        # Cette commande permet d'effacer l'écran avant de dessiner. Elle va dessiner l'arrière
-        # plan selon la couleur spécifié avec la méthode "set_background_color".
         arcade.start_render()
-
-        # Display title
-        arcade.draw_text(SCREEN_TITLE, 0, SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 2, arcade.color.BLACK_BEAN, 60,
-                         width=SCREEN_WIDTH, align="center")
+        arcade.draw_text(SCREEN_TITLE, 0, SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 2, arcade.color.BLACK_BEAN, 60,width=SCREEN_WIDTH, align="center")
         self.draw_instructions()
-        self.players.draw()
+        self.player.draw()
+        self.computer.draw()
+        #self.players.draw()
         self.draw_possible_attack()
         self.draw_scores()
+        if self.game_state == GameState.ROUND_ACTIVE:
+            self.rock.draw()
+            self.paper.draw()
+            self.scissors.draw()
         # afficher l'attaque de l'ordinateur selon l'état de jeu
         # afficher le résultat de la partie si l'ordinateur a joué (ROUND_DONE)
         pass
@@ -132,14 +133,14 @@ class MyGame(arcade.Window):
        Pour connaître la liste des touches possibles:
        http://arcade.academy/arcade.key.html
        """
-        if (self.game_state == game_state.GameState.NOT_STARTED and key == arcade.key.SPACE):
-            self.game_state = game_state.GameState.ROUND_ACTIVE
+        if (self.game_state == GameState.NOT_STARTED and key == arcade.key.SPACE):
+            self.game_state = GameState.ROUND_ACTIVE
 
-        elif (self.game_state == game_state.GameState.ROUND_DONE and key == arcade.key.SPACE):
-            self.game_state = game_state.GameState.ROUND_ACTIVE
+        elif (self.game_state == GameState.ROUND_DONE and key == arcade.key.SPACE):
+            self.game_state = GameState.ROUND_ACTIVE
             False
-        elif (self.game_state == game_state.GameState.GAME_OVER and key == arcade.key.SPACE):
-            self.game_state = game_state.GameState.ROUND_ACTIVE
+        elif (self.game_state == GameState.GAME_OVER and key == arcade.key.SPACE):
+            self.game_state = GameState.ROUND_ACTIVE
             False
     def reset_round(self):
         """
