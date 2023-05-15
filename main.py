@@ -49,9 +49,9 @@ class MyGame(arcade.Window):
         self.player = arcade.Sprite('asset/faceBeard.png', 0.5, center_x=self.PLAYER_IMAGE_X, center_y=self.PLAYER_IMAGE_Y)
         self.computer = arcade.Sprite('asset/compy.png', 2.5, center_x=self.COMPUTER_IMAGE_X, center_y=self.COMPUTER_IMAGE_Y)
         self.players = None
-        self.rock = arcade.Sprite('asset/srock.png', 0.5, center_x=self.PLAYER_IMAGE_X, center_y=self.PLAYER_IMAGE_Y)
-        self.paper = arcade.Sprite('asset/spaper.png', 0.5, center_x=self.PLAYER_IMAGE_X, center_y=self.PLAYER_IMAGE_Y)
-        self.scissors = arcade.Sprite('asset/scissors.png', 0.5, center_x=self.PLAYER_IMAGE_X, center_y=self.PLAYER_IMAGE_Y)
+        self.rock = arcade.Sprite('asset/srock.png', 0.5, center_x=SCREEN_WIDTH , center_y=SCREEN_HEIGHT)
+        self.paper = arcade.Sprite('asset/spaper.png', 0.5, center_x=SCREEN_WIDTH , center_y=SCREEN_HEIGHT)
+        self.scissors = arcade.Sprite('asset/scissors.png', 0.5, center_x=SCREEN_WIDTH , center_y=SCREEN_HEIGHT)
         self.player_score = 0
         self.computer_score = 0
         self.player_attack_type = {}
@@ -101,10 +101,15 @@ class MyGame(arcade.Window):
         #self.players.draw()
         self.draw_possible_attack()
         self.draw_scores()
+
         if self.game_state == GameState.ROUND_ACTIVE:
             self.rock.draw()
             self.paper.draw()
             self.scissors.draw()
+            arcade.draw_rectangle_outline(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
+            arcade.draw_rectangle_outline(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
+            arcade.draw_rectangle_outline(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
+            arcade.draw_rectangle_outline(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
         # afficher l'attaque de l'ordinateur selon l'état de jeu
         # afficher le résultat de la partie si l'ordinateur a joué (ROUND_DONE)
         pass
