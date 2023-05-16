@@ -4,9 +4,6 @@ import arcade
 from attack_animation import AttackType, AttackAnimation
 from game_state import GameState
 
-from attack_animation import AttackType, AttackAnimation
-from game_state import GameState
-
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Roche, papier, ciseaux"
@@ -49,9 +46,9 @@ class MyGame(arcade.Window):
         self.player = arcade.Sprite('asset/faceBeard.png', 0.5, center_x=self.PLAYER_IMAGE_X, center_y=self.PLAYER_IMAGE_Y)
         self.computer = arcade.Sprite('asset/compy.png', 2.5, center_x=self.COMPUTER_IMAGE_X, center_y=self.COMPUTER_IMAGE_Y)
         self.players = None
-        self.rock = arcade.Sprite('asset/srock.png', 0.5, center_x=SCREEN_WIDTH , center_y=SCREEN_HEIGHT)
-        self.paper = arcade.Sprite('asset/spaper.png', 0.5, center_x=SCREEN_WIDTH , center_y=SCREEN_HEIGHT)
-        self.scissors = arcade.Sprite('asset/scissors.png', 0.5, center_x=SCREEN_WIDTH , center_y=SCREEN_HEIGHT)
+        self.rock = arcade.Sprite('asset/srock.png', 0.5, center_x=SCREEN_WIDTH / 4, center_y=SCREEN_HEIGHT / 5)
+        self.paper = arcade.Sprite('asset/spaper.png', 0.5, center_x=SCREEN_WIDTH / 3, center_y=SCREEN_HEIGHT / 5 )
+        self.scissors = arcade.Sprite('asset/scissors.png', 0.5, center_x=SCREEN_WIDTH / 6 , center_y=SCREEN_HEIGHT/ 5)
         self.player_score = 0
         self.computer_score = 0
         self.player_attack_type = {}
@@ -95,6 +92,8 @@ class MyGame(arcade.Window):
     def on_draw(self):
         arcade.start_render()
         arcade.draw_text(SCREEN_TITLE, 0, SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 2, arcade.color.BLACK_BEAN, 60,width=SCREEN_WIDTH, align="center")
+        arcade.draw_text(f"Le score de l'ordinateur est de {self.computer_score}",SCREEN_WIDTH/ 4.1, SCREEN_HEIGHT / 12, arcade.color.BLACK_BEAN, 20, width=SCREEN_WIDTH, align="center")
+        arcade.draw_text(f"Votre score est de {self.player_score}", SCREEN_WIDTH / -5, SCREEN_HEIGHT / 12, arcade.color.BLACK_BEAN, 20, width=SCREEN_WIDTH, align="center")
         self.draw_instructions()
         self.player.draw()
         self.computer.draw()
@@ -106,10 +105,12 @@ class MyGame(arcade.Window):
             self.rock.draw()
             self.paper.draw()
             self.scissors.draw()
-            arcade.draw_rectangle_outline(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
-            arcade.draw_rectangle_outline(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
-            arcade.draw_rectangle_outline(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
-            arcade.draw_rectangle_outline(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
+            arcade.draw_rectangle_outline(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 5, self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
+            arcade.draw_rectangle_outline(SCREEN_WIDTH / 3, SCREEN_HEIGHT / 5, self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
+            arcade.draw_rectangle_outline(SCREEN_WIDTH / 6, SCREEN_HEIGHT / 5, self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
+            arcade.draw_rectangle_outline(SCREEN_WIDTH / 1.35, SCREEN_HEIGHT / 5, self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
+
+
         # afficher l'attaque de l'ordinateur selon l'état de jeu
         # afficher le résultat de la partie si l'ordinateur a joué (ROUND_DONE)
         pass
@@ -170,15 +171,17 @@ class MyGame(arcade.Window):
 
         # Test de collision pour le type d'attaque (self.player_attack_type).
         # Rappel que si le joueur choisi une attaque, self.player_attack_chosen = True
-        def on_mouse_press(self, x, y, button, key_modifiers):
-            if self.hero.collides_with_point((x, y)):
-                print("L'usager a cliqué sur le héros.")
-            else:
-                print("L'usager a cliqué ailleurs.")
+        if self.game_state == GameState.ROUND_ACTIVE:
+            # Détecter si l'utilisatyeur a cliqué sur une attaque
+            if self.rock.collides_with_point((x, y)):
+                print("Rock")
+            elif self.paper.collides_with_point((x, y)):
+                print("paper")
+            elif self.scissors.collides_with_point((x, y)):
+                print("scissors")
 
 
 def main():
-    """ Main method """
     game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     game.setup()
     arcade.run()
