@@ -10,12 +10,6 @@ SCREEN_TITLE = "Roche, papier, ciseaux"
 DEFAULT_LINE_HEIGHT = 45  # The default line height for text.
 
 class MyGame(arcade.Window):
-    """
-   La classe principale de l'application
-
-   NOTE: Vous pouvez effacer les méthodes que vous n'avez pas besoin.
-   Si vous en avez besoin, remplacer le mot clé "pass" par votre propre code.
-   """
 
     PLAYER_IMAGE_X = (SCREEN_WIDTH / 2) - (SCREEN_WIDTH / 4)
     PLAYER_IMAGE_Y = SCREEN_HEIGHT / 2.5
@@ -30,7 +24,7 @@ class MyGame(arcade.Window):
         self.player = None
         self.computer = None
         self.players = None
-        self.rock = None
+        self.rock_player = None
         self.paper = None
         self.scissors = None
         self.player_score = 0
@@ -46,10 +40,17 @@ class MyGame(arcade.Window):
         self.player = arcade.Sprite('asset/faceBeard.png', 0.5, center_x=self.PLAYER_IMAGE_X, center_y=self.PLAYER_IMAGE_Y)
         self.computer = arcade.Sprite('asset/compy.png', 2.5, center_x=self.COMPUTER_IMAGE_X, center_y=self.COMPUTER_IMAGE_Y)
         self.players = None
-        self.rock = arcade.Sprite('asset/srock.png', 0.5, center_x=SCREEN_WIDTH / 4, center_y=SCREEN_HEIGHT / 5)
-        self.paper = arcade.Sprite('asset/spaper.png', 0.5, center_x=SCREEN_WIDTH / 3, center_y=SCREEN_HEIGHT / 5 )
-        self.scissors = arcade.Sprite('asset/scissors.png', 0.5, center_x=SCREEN_WIDTH / 6 , center_y=SCREEN_HEIGHT/ 5)
+        self.type_choice = arcade.SpriteList()
+        self.rock_player = arcade.Sprite('asset/srock.png', 0.5, center_x=SCREEN_WIDTH / 4, center_y=SCREEN_HEIGHT / 5)
+        self.type_choice.append(self.rock_player)
+        self.paper_player = arcade.Sprite('asset/spaper.png', 0.5, center_x=SCREEN_WIDTH / 3, center_y=SCREEN_HEIGHT / 5 )
+        self.type_choice.append(self.paper_player)
+        self.scissors_player = arcade.Sprite('asset/scissors.png', 0.5, center_x=SCREEN_WIDTH / 6 , center_y=SCREEN_HEIGHT/ 5)
+        self.type_choice.append(self.scissors_player)
 
+        self.rock_computer = arcade.Sprite('asset/srock.png', 0.5, center_x=SCREEN_WIDTH / 1.35, center_y=SCREEN_HEIGHT / 5)
+        self.paper_computer = arcade.Sprite('asset/spaper.png', 0.5, center_x=SCREEN_WIDTH / 1.35, center_y=SCREEN_HEIGHT / 5)
+        self.scissors_computer = arcade.Sprite('asset/scissors.png', 0.5, center_x=SCREEN_WIDTH / 1.35, center_y=SCREEN_HEIGHT / 5)
         self.player_score = 0
         self.computer_score = 0
         self.player_attack_type = {1: AttackType.ROCK, 2: AttackType.PAPER, 3: AttackType.SCISSORS}
@@ -57,7 +58,7 @@ class MyGame(arcade.Window):
         self.player_attack_chosen = False
         self.player_won_round = 0
         self.draw_round = None
-        self.game_state = GameState.ROUND_ACTIVE
+        self.game_state = GameState.NOT_STARTED
     def validate_victory(self):
         """
        Utilisé pour déterminer qui obtient la victoire (ou s'il y a égalité)
@@ -88,7 +89,7 @@ class MyGame(arcade.Window):
        """
         pass
     def computer_choice(self):
-        return random.choice(list(self.player_attack_type.values()))
+        return random.choice(list(AttackType))
 
     def on_draw(self):
         arcade.start_render()
@@ -102,36 +103,28 @@ class MyGame(arcade.Window):
         self.draw_possible_attack()
         self.draw_scores()
 
+
         if self.game_state == GameState.ROUND_ACTIVE:
-            if self.player_attack_type == AttackType.ROCK or self.player_attack_type == {1: AttackType.ROCK, 2: AttackType.PAPER, 3: AttackType.SCISSORS}:
-                self.rock.draw()
-            if self.player_attack_type == AttackType.PAPER or self.player_attack_type == {1: AttackType.ROCK, 2: AttackType.PAPER, 3: AttackType.SCISSORS}:
-                self.paper.draw()
-            if self.player_attack_type == AttackType.SCISSORS or self.player_attack_type == {1: AttackType.ROCK, 2: AttackType.PAPER, 3: AttackType.SCISSORS}:
-                self.scissors.draw()
+                self.type_choice.draw()
+        elif self.game_state == GameState.ROUND_DONE:
+            if self.player_attack_type == AttackType.ROCK:
+                self.rock_player.draw()
+            elif self.player_attack_type == AttackType.PAPER:
+                self.paper_player.draw()
+            elif self.player_attack_type == AttackType.SCISSORS:
+                self.scissors_player.draw()
 
-            arcade.draw_rectangle_outline(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 5, self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
-            arcade.draw_rectangle_outline(SCREEN_WIDTH / 3, SCREEN_HEIGHT / 5, self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
-            arcade.draw_rectangle_outline(SCREEN_WIDTH / 6, SCREEN_HEIGHT / 5, self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
-            arcade.draw_rectangle_outline(SCREEN_WIDTH / 1.35, SCREEN_HEIGHT / 5, self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
+        arcade.draw_rectangle_outline(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 5, self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
+        arcade.draw_rectangle_outline(SCREEN_WIDTH / 3, SCREEN_HEIGHT / 5, self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
+        arcade.draw_rectangle_outline(SCREEN_WIDTH / 6, SCREEN_HEIGHT / 5, self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
+        arcade.draw_rectangle_outline(SCREEN_WIDTH / 1.35, SCREEN_HEIGHT / 5, self.ATTACK_FRAME_WIDTH, self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
 
 
-        # afficher l'attaque de l'ordinateur selon l'état de jeu
-        # afficher le résultat de la partie si l'ordinateur a joué (ROUND_DONE)
-        pass
 
     def on_update(self, delta_time):
-        """
-       Toute la logique pour déplacer les objets de votre jeu et de
-       simuler sa logique vont ici. Normalement, c'est ici que
-       vous allez invoquer la méthode "update()" sur vos listes de sprites.
-       Paramètre:
-           - delta_time : le nombre de milliseconde depuis le dernier update.
-       """
-        # vérifier si le jeu est actif (ROUND_ACTIVE) et continuer l'animation des attaques
-        # si le joueur a choisi une attaque, générer une attaque de l'ordinateur et valider la victoire
-        # changer l'état de jeu si nécessaire (GAME_OVER)
-        pass
+        if self.player_attack_chosen:
+            self.computer_attack_type = self.computer_choice()
+            self.game_state = GameState.ROUND_DONE
 
     def on_key_press(self, key, key_modifiers):
         """hh
@@ -144,15 +137,13 @@ class MyGame(arcade.Window):
        Pour connaître la liste des touches possibles:
        http://arcade.academy/arcade.key.html
        """
-        if (self.game_state == GameState.NOT_STARTED and key == arcade.key.SPACE):
+        if self.game_state == GameState.NOT_STARTED:
             self.game_state = GameState.ROUND_ACTIVE
 
-        elif (self.game_state == GameState.ROUND_DONE and key == arcade.key.SPACE):
+        elif self.game_state == GameState.ROUND_DONE:
             self.game_state = GameState.ROUND_ACTIVE
-            False
-        elif (self.game_state == GameState.GAME_OVER and key == arcade.key.SPACE):
+        elif self.game_state == GameState.GAME_OVER:
             self.game_state = GameState.ROUND_ACTIVE
-            False
         print(self.computer_choice())
     def reset_round(self):
         """
@@ -179,15 +170,16 @@ class MyGame(arcade.Window):
         # Rappel que si le joueur choisi une attaque, self.player_attack_chosen = True
         if self.game_state == GameState.ROUND_ACTIVE:
 
-            if self.rock.collides_with_point((x, y)):
+            if self.rock_player.collides_with_point((x, y)):
                 self.player_attack_type = AttackType.ROCK
                 self.player_attack_chosen = True
-            elif self.paper.collides_with_point((x, y)):
+            elif self.paper_player.collides_with_point((x, y)):
                 self.player_attack_type = AttackType.PAPER
                 self.player_attack_chosen = True
-            elif self.scissors.collides_with_point((x, y)):
+            elif self.scissors_player.collides_with_point((x, y)):
                 self.player_attack_type = AttackType.SCISSORS
                 self.player_attack_chosen = True
+
 
 
 def main():
