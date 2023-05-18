@@ -7,8 +7,7 @@ from game_state import GameState
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Roche, Papier, Ciseaux"
-DEFAULT_LINE_HEIGHT = 45  # The default line height for text.
-
+DEFAULT_LINE_HEIGHT = 45
 
 class MyGame(arcade.Window):
     PLAYER_IMAGE_X = (SCREEN_WIDTH / 2) - (SCREEN_WIDTH / 4)
@@ -43,21 +42,32 @@ class MyGame(arcade.Window):
                                       center_y=self.COMPUTER_IMAGE_Y)
         self.players = None
         self.type_choice = arcade.SpriteList()
-        self.rock_player = arcade.Sprite('asset/srock.png', 0.5, center_x=SCREEN_WIDTH / 4, center_y=SCREEN_HEIGHT / 5)
+        self.rock_player = AttackAnimation(AttackType.ROCK)
+        self.rock_player.center_x = SCREEN_WIDTH / 4
+        self.rock_player.center_y = SCREEN_HEIGHT / 5
         self.type_choice.append(self.rock_player)
-        self.paper_player = arcade.Sprite('asset/spaper.png', 0.5, center_x=SCREEN_WIDTH / 3,
-                                          center_y=SCREEN_HEIGHT / 5)
+        self.paper_player = AttackAnimation(AttackType.PAPER)
+        self.paper_player.center_x = SCREEN_WIDTH / 3
+        self.paper_player.center_y = SCREEN_HEIGHT / 5
         self.type_choice.append(self.paper_player)
-        self.scissors_player = arcade.Sprite('asset/scissors.png', 0.5, center_x=SCREEN_WIDTH / 6,
-                                             center_y=SCREEN_HEIGHT / 5)
+        self.scissors_player = AttackAnimation(AttackType.SCISSORS)
+        self.scissors_player.center_x = SCREEN_WIDTH / 6
+        self.scissors_player.center_y = SCREEN_HEIGHT / 5
         self.type_choice.append(self.scissors_player)
 
-        self.rock_computer = arcade.Sprite('asset/srock.png', 0.5, center_x=SCREEN_WIDTH / 1.35,
-                                           center_y=SCREEN_HEIGHT / 5)
-        self.paper_computer = arcade.Sprite('asset/spaper.png', 0.5, center_x=SCREEN_WIDTH / 1.35,
-                                            center_y=SCREEN_HEIGHT / 5)
-        self.scissors_computer = arcade.Sprite('asset/scissors.png', 0.5, center_x=SCREEN_WIDTH / 1.35,
-                                               center_y=SCREEN_HEIGHT / 5)
+        self.rock_computer = AttackAnimation(AttackType.ROCK)
+        self.rock_computer.center_x = SCREEN_WIDTH / 1.35
+        self.rock_computer.center_y = SCREEN_HEIGHT / 5
+
+
+        self.paper_computer = AttackAnimation(AttackType.PAPER)
+        self.paper_computer.center_x = SCREEN_WIDTH / 1.35
+        self.paper_computer.center_y = SCREEN_HEIGHT / 5
+
+        self.scissors_computer = AttackAnimation(AttackType.SCISSORS)
+        self.scissors_computer.center_x = SCREEN_WIDTH / 1.35
+        self.scissors_computer.center_y = SCREEN_HEIGHT / 5
+
         self.player_score = 0
         self.computer_score = 0
         self.player_attack_type = {1: AttackType.ROCK, 2: AttackType.PAPER, 3: AttackType.SCISSORS}
@@ -72,6 +82,8 @@ class MyGame(arcade.Window):
             return None
         elif self.player_attack_type == AttackType.ROCK and self.computer_attack_type == AttackType.SCISSORS:
             self.player_score += 1
+            arcade.draw_text("Vous avez gagné!", SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, arcade.color.ALMOND, 20,
+                             width=SCREEN_WIDTH, align="center")
         elif self.player_attack_type == AttackType.PAPER and self.computer_attack_type == AttackType.ROCK:
             self.player_score += 1
         elif self.player_attack_type == AttackType.SCISSORS and self.computer_attack_type == AttackType.PAPER:
@@ -85,7 +97,6 @@ class MyGame(arcade.Window):
        (si aucune attaque n'a été sélectionnée, il faut dessiner les trois possibilités)
        (si une attaque a été sélectionnée, il faut dessiner cette attaque)
        """
-        pass
 
     def draw_computer_attack(self):
         if self.computer_attack_type == AttackType.ROCK:
@@ -102,12 +113,16 @@ class MyGame(arcade.Window):
                          arcade.color.ALMOND, 20, width=SCREEN_WIDTH, align="center")
 
     def draw_instructions(self):
-        """
-        Dépendemment de l'état de jeu, afficher les instructions d'utilisation au joueur (appuyer sur espace,
-        ou sur une image)
-        """
-        pass
+        if self.game_state == GameState.NOT_STARTED:
+            arcade.draw_text("Appuyez sur ESPACE pour commencer la ronde!", 0, SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 3,
+                             arcade.color.ALMOND, 20, width=SCREEN_WIDTH, align="center")
 
+        elif self.game_state == GameState.ROUND_ACTIVE:
+            arcade.draw_text("Appuyez sur une image pour faire une attaque!", 0, SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 3,
+                                arcade.color.ALMOND, 20, width=SCREEN_WIDTH, align="center")
+        elif self.game_state == GameState.ROUND_DONE:
+            arcade.draw_text("Appuyez sur ESPACE pour commencer une nouvelle ronde!", 0, SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 3,
+                                arcade.color.ALMOND, 20, width=SCREEN_WIDTH, align="center")
     def computer_choice(self):
         return random.choice(list(AttackType))
 
@@ -115,12 +130,9 @@ class MyGame(arcade.Window):
         arcade.start_render()
         arcade.draw_text(SCREEN_TITLE, 0, SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 2, arcade.color.ALMOND, 50,
                          width=SCREEN_WIDTH, align="center")
-        arcade.draw_text("Appuyez sur une image pour faire une attaque !", 0, SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 3,
-                         arcade.color.ALMOND, 20, width=SCREEN_WIDTH, align="center")
         self.draw_instructions()
         self.player.draw()
         self.computer.draw()
-
         self.draw_possible_attack()
         self.draw_scores()
 
@@ -136,19 +148,26 @@ class MyGame(arcade.Window):
             self.draw_computer_attack()
 
         arcade.draw_rectangle_outline(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 5, self.ATTACK_FRAME_WIDTH,
-                                      self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
+                                      self.ATTACK_FRAME_HEIGHT, arcade.color.ALABAMA_CRIMSON, 5)
         arcade.draw_rectangle_outline(SCREEN_WIDTH / 3, SCREEN_HEIGHT / 5, self.ATTACK_FRAME_WIDTH,
-                                      self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
+                                      self.ATTACK_FRAME_HEIGHT, arcade.color.ALABAMA_CRIMSON, 5)
         arcade.draw_rectangle_outline(SCREEN_WIDTH / 6, SCREEN_HEIGHT / 5, self.ATTACK_FRAME_WIDTH,
-                                      self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
+                                      self.ATTACK_FRAME_HEIGHT, arcade.color.ALABAMA_CRIMSON, 5)
         arcade.draw_rectangle_outline(SCREEN_WIDTH / 1.35, SCREEN_HEIGHT / 5, self.ATTACK_FRAME_WIDTH,
-                                      self.ATTACK_FRAME_HEIGHT, arcade.color.RED, 5)
+                                      self.ATTACK_FRAME_HEIGHT, arcade.color.ALABAMA_CRIMSON, 5)
 
     def on_update(self, delta_time):
         if self.player_attack_chosen and self.game_state == GameState.ROUND_ACTIVE:
             self.computer_attack_type = self.computer_choice()
             self.game_state = GameState.ROUND_DONE
             self.validate_victory()
+
+        self.rock_player.on_update()
+        self.paper_player.on_update()
+        self.scissors_player.on_update()
+        self.rock_computer.on_update()
+        self.paper_computer.on_update()
+        self.scissors_computer.on_update()
 
     def on_key_press(self, key, key_modifiers):
 
