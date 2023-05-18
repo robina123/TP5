@@ -21,18 +21,18 @@ class AttackAnimation(arcade.Sprite):
         self.attack_type = attack_type
         if self.attack_type == AttackType.ROCK:
             self.textures = [
-                arcade.load_texture("assets/srock.png"),
-                arcade.load_texture("assets/srock-attack.png"),
+                arcade.load_texture("asset/srock.png"),
+                arcade.load_texture("asset/srock-attack.png"),
             ]
         elif self.attack_type == AttackType.PAPER:
             self.textures = [
-                arcade.load_texture("assets/spaper.png"),
-                arcade.load_texture("assets/spaper-attack.png"),
+                arcade.load_texture("asset/spaper.png"),
+                arcade.load_texture("asset/spaper-attack.png"),
             ]
         else:
             self.textures = [
-                arcade.load_texture("assets/scissors.png"),
-                arcade.load_texture("assets/scissors-close.png"),
+                arcade.load_texture("asset/scissors.png"),
+                arcade.load_texture("asset/scissors-close.png"),
             ]
 
         self.scale = self.ATTACK_SCALE
@@ -50,4 +50,5 @@ class AttackAnimation(arcade.Sprite):
                 self.current_texture = 0
                 self.set_texture(self.current_texture)
             self.time_since_last_swap = 0.0
+
 
