@@ -2,7 +2,7 @@ import random
 import arcade
 from attack_animation import AttackType, AttackAnimation
 from game_state import GameState
-# definition de la hauteure et largeur de l'ecran
+# definition de la hauteur et largeur de l'ecran
 SCREEN_WIDTH = 1024
 SCREEN_HEIGHT = 600
 SCREEN_TITLE = "Roche, Papier, Ciseaux"
@@ -153,11 +153,11 @@ class MyGame(arcade.Window):
                              arcade.color.ALMOND, 20, width=SCREEN_WIDTH, align="center")
         elif self.game_state == GameState.GAME_OVER:
             if self.player_score > self.computer_score:
-                arcade.draw_text(" Vous avez gagne la partie! Appuyez sur ESPACE!", 0,
+                arcade.draw_text(" Vous avez gagne la partie! Appuyez sur ESPACE pour recommencer!", 0,
                                  SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 3,
                                  arcade.color.ALMOND, 20, width=SCREEN_WIDTH, align="center")
             elif self.player_score < self.computer_score:
-                arcade.draw_text(" Vous avez perdu la partie! Appuyez sur ESPACE!", 0,
+                arcade.draw_text(" Vous avez perdu la partie! Appuyez sur ESPACE pour recommencer!", 0,
                                  SCREEN_HEIGHT - DEFAULT_LINE_HEIGHT * 3,
                                  arcade.color.ALMOND, 20, width=SCREEN_WIDTH, align="center")
 
